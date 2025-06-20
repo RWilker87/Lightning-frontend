@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3333', // Endereço do seu backend
+  baseURL: 'https://lightning-backend-fl6y.onrender.com/', // Endereço do seu backend
 });
 
 export default api;
