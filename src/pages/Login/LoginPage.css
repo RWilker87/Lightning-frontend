@@ -1,0 +1,160 @@
+/* Reset básico */
+body,
+html,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #e5e5e5; /* fundo branco acinzentado */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.container {
+  width: 900px;
+  height: 600px;
+  display: flex;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Painel Esquerdo */
+.left-panel {
+  flex: 1;
+  background-color: #4db6ac;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.left-panel h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.left-panel p {
+  font-size: 14px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.transparent-btn {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 10px 30px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.transparent-btn:hover {
+  background-color: white;
+  color: #4db6ac;
+}
+
+/* Painel Direito */
+.right-panel {
+  flex: 1;
+  background-color: #f3f6f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-box {
+  width: 80%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.form-box h2 {
+  color: #4db6ac;
+  margin-bottom: 10px;
+}
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.social-icons button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: #ddd;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form-box span {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.form-box input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background: #fff; /* Destaque branco puro */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
+}
+
+.signup-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #4db6ac;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.signup-btn:hover {
+  background-color: #399e94;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+.inputEmail,
+.inputPassword {
+  width: 100%;
+  padding: 12px 16px;
+  margin: 10px 0;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputEmail:focus,
+.inputPassword:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}

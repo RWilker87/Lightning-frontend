@@ -1,0 +1,83 @@
+.history-container {
+  max-width: 1400px;
+  margin: 40px auto;
+  padding: 30px 40px;
+  font-family: "Inter", sans-serif;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 30, 80, 0.08);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.history-header h1 {
+  font-size: 28px;
+  color: #1c2a38;
+}
+
+.history-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.history-table th,
+.history-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+  white-space: nowrap;
+}
+
+.history-table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.history-table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+.risk-high {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.risk-low {
+  color: #28a745;
+}
+
+.details-button {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.details-button:hover {
+  background-color: #0056b3;
+}
+
+.no-history-message {
+  text-align: center;
+  font-size: 18px;
+  color: #6c757d;
+  padding: 50px 0;
+}

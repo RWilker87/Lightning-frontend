@@ -1,0 +1,111 @@
+.admin-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px;
+  font-family: "Inter", sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+
+.admin-header h1 {
+  font-size: 28px;
+  color: #1c2a38;
+}
+
+.user-table-container {
+  width: 100%;
+  overflow-x: auto; /* Garante que a tabela seja rolável em telas pequenas */
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.user-table th,
+.user-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.user-table thead th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+}
+
+.user-table tbody tr:hover {
+  background-color: #f1f3f5;
+}
+
+.admin-badge {
+  background-color: #ffc107;
+  color: #333;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+}
+
+.status-active {
+  background-color: #28a745;
+}
+
+.status-inactive {
+  background-color: #dc3545;
+}
+
+.days-input {
+  width: 80px;
+  padding: 8px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.action-button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
+.card-history {
+  background: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.card-history h3 {
+  color: #495057;
+}
+
+.card-history .option-card-icon {
+  color: #6c757d;
+}

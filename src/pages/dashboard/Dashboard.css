@@ -1,0 +1,199 @@
+/* src/pages/dashboard/Dashboard.css */
+
+/* --- Container e Cabeçalho --- */
+.hub-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 30px 40px;
+  font-family: "Inter", sans-serif;
+}
+
+.hub-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e9ecef;
+  margin-bottom: 40px;
+}
+
+.hub-header h1 {
+  font-size: 28px;
+  color: #1c2a38;
+}
+
+.header-user-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-link {
+  font-weight: 500;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.admin-link:hover {
+  color: #0056b3;
+}
+
+.welcome-user {
+  color: #5a6a7b;
+}
+
+.logout-button {
+  padding: 9px 18px;
+  cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+.logout-button:hover {
+  background-color: #5a6268;
+}
+
+/* --- Título e Alerta de Licença --- */
+.hub-title {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 40px;
+  color: #343a40;
+  font-weight: 600;
+}
+
+.license-error-box {
+  margin-bottom: 30px;
+  padding: 15px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* --- Container das Opções --- */
+.options-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; /* Garante que os cartões tenham a mesma altura */
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* --- Estilo Base dos Cartões --- */
+.option-card {
+  flex: 1;
+  min-width: 320px;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 35px 30px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 6px 20px rgba(0, 30, 80, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.option-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 28px rgba(0, 30, 80, 0.12);
+}
+
+.option-card-icon {
+  margin-bottom: 20px;
+}
+
+.option-card h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.option-card p {
+  font-size: 15px;
+  color: #495057;
+  line-height: 1.6;
+  flex-grow: 1; /* Faz o parágrafo ocupar o espaço para alinhar botões */
+}
+
+/* --- Design Distinto para cada Cartão --- */
+.card-complex {
+  background: linear-gradient(145deg, #0056b3, #007bff);
+  color: white;
+  border-color: #007bff;
+}
+
+.card-complex h3 {
+  color: white;
+}
+
+.card-complex p {
+  color: #e9ecef;
+}
+
+.card-complex .option-card-icon {
+  color: #ade8ff;
+}
+
+.card-simple {
+  background: #ffffff;
+  border-color: #e9ecef;
+}
+
+.card-simple h3 {
+  color: #343a40;
+}
+
+.card-simple .option-card-icon {
+  color: #007bff;
+}
+
+/* --- Estado Desativado e Avisos --- */
+.option-card.disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.option-card.disabled:hover {
+  transform: none;
+  box-shadow: 0 6px 20px rgba(0, 30, 80, 0.07);
+}
+
+.option-card.disabled h3,
+.option-card.disabled .option-card-icon,
+.option-card.disabled p {
+  color: #6c757d;
+  opacity: 0.7;
+}
+
+.lock-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  opacity: 0.3;
+}
+
+.license-required-tag {
+  margin-top: 20px;
+  padding: 6px 16px;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
