@@ -2,6 +2,7 @@
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.jsx";
+import { format } from "date-fns";
 import "./Dashboard.css";
 
 // Ícones como componentes SVG para melhor qualidade e controlo
@@ -43,7 +44,6 @@ const IconSimple = () => (
   </svg>
 );
 
-// CORREÇÃO: O componente IconHistory estava em falta.
 const IconHistory = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -61,10 +61,53 @@ const IconHistory = () => (
   </svg>
 );
 
+// Card de status da licença
+function LicenseStatusCard({ license }) {
+  if (!license) {
+    return (
+      <div className="license-card license-inactive">
+        <div className="license-card-icon">⏳</div>
+        <div className="license-card-info">
+          <h3>Licença Inativa</h3>
+          <p>Aguardando aprovação do administrador.</p>
+          <p className="license-subtitle">
+            Sua conta foi criada, mas a licença ainda não foi ativada. Entre em contato com o administrador.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!license.active) {
+    return (
+      <div className="license-card license-expired">
+        <div className="license-card-icon">❌</div>
+        <div className="license-card-info">
+          <h3>Licença Expirada</h3>
+          <p>Sua licença expirou. Aguardando renovação pelo administrador.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const validDate = new Date(license.validUntil);
+  return (
+    <div className="license-card license-active">
+      <div className="license-card-icon">✅</div>
+      <div className="license-card-info">
+        <h3>Licença Ativa</h3>
+        <p>Válida até: <strong>{format(validDate, "dd/MM/yyyy")}</strong></p>
+      </div>
+    </div>
+  );
+}
+
 export function DashboardPage() {
   const { user, logout, license } = useAuth();
   const [searchParams] = useSearchParams();
-  const licenseExpired = searchParams.get("license_error") === "true";
+  const licenseError = searchParams.get("license_error") === "true";
+
+  const hasActiveLicense = license && license.active;
 
   return (
     <div className="hub-container">
@@ -72,7 +115,7 @@ export function DashboardPage() {
         <h1>Painel Principal</h1>
         <div className="header-user-controls">
           {user?.is_admin && (
-            <Link to="/admin" className="admin-link">
+            <Link to="/admin/dashboard" className="admin-link">
               Painel de Administração
             </Link>
           )}
@@ -84,21 +127,25 @@ export function DashboardPage() {
       </header>
 
       <main className="hub-main">
-        <h2 className="hub-title">Selecione uma Ferramenta de Análise</h2>
+        {/* Card de Status da Licença */}
+        <LicenseStatusCard license={license} />
 
-        {licenseExpired && (
+        {licenseError && (
           <div className="license-error-box">
             Acesso negado. A funcionalidade de Análise Completa requer uma
             licença ativa.
           </div>
         )}
 
+        <h2 className="hub-title">Selecione uma Ferramenta de Análise</h2>
+
         <div className="options-container">
           <Link
-            to="/calculo-complexo"
-            className={`option-card card-complex ${!license ? "disabled" : ""}`}
+            to={hasActiveLicense ? "/calculo-complexo" : "#"}
+            className={`option-card card-complex ${!hasActiveLicense ? "disabled" : ""}`}
+            onClick={(e) => !hasActiveLicense && e.preventDefault()}
           >
-            {!license && <div className="lock-icon">🔒</div>}
+            {!hasActiveLicense && <div className="lock-icon">🔒</div>}
             <div className="option-card-icon">
               <IconComplex />
             </div>
@@ -107,7 +154,7 @@ export function DashboardPage() {
               Realize um cálculo detalhado conforme a norma ABNT NBR 5419, com
               todos os parâmetros.
             </p>
-            {!license && (
+            {!hasActiveLicense && (
               <span className="license-required-tag">Requer Licença Ativa</span>
             )}
           </Link>
@@ -123,7 +170,6 @@ export function DashboardPage() {
             </p>
           </Link>
 
-          {/* Cartão de Histórico que estava a causar o erro */}
           <Link to="/historico" className="option-card card-history">
             <div className="option-card-icon">
               <IconHistory />

@@ -22,29 +22,27 @@ const AuthProtectedRoute = ({ children }) => {
   return isAuthenticated ? children : <Navigate to="/login" replace />;
 };
 
+// "Porteiro" de Admin: Verifica se o utilizador é admin.
 const AdminProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   if (loading) return <div className="loading-screen">A carregar...</div>;
-  // Redireciona para o dashboard principal se o utilizador não for admin
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return user?.is_admin ? children : <Navigate to="/dashboard" replace />;
 };
 
 // "Porteiro" de Licença: Verifica a licença no backend ANTES de permitir o acesso.
 const LicenseProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  const [hasAccess, setHasAccess] = useState(null); // null: a verificar, true: sim, false: não
+  const [hasAccess, setHasAccess] = useState(null);
 
   useEffect(() => {
-    // Só executa a verificação se o utilizador estiver autenticado e o carregamento inicial concluído.
     if (!loading && isAuthenticated) {
       api
         .get("/check-license")
         .then(() => {
-          // Se o backend responder com sucesso (200 OK), o acesso é permitido.
           setHasAccess(true);
         })
         .catch(() => {
-          // Se o backend responder com um erro (403 Forbidden), o acesso é negado.
           setHasAccess(false);
         });
     }
@@ -54,7 +52,10 @@ const LicenseProtectedRoute = ({ children }) => {
     return <div className="loading-screen">A verificar licença...</div>;
   }
 
-  // Se o acesso for negado, redireciona para o dashboard com uma mensagem de erro na URL.
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   return hasAccess ? (
     children
   ) : (
@@ -82,7 +83,7 @@ function AppRoutes() {
       />
 
       <Route
-        path="/admin"
+        path="/admin/dashboard"
         element={
           <AdminProtectedRoute>
             <AdminPage />
@@ -99,7 +100,7 @@ function AppRoutes() {
         }
       />
 
-      {/* A Calculadora Complexa usa o novo porteiro que verifica a licença no backend */}
+      {/* A Calculadora Complexa usa o porteiro que verifica a licença no backend */}
       <Route
         path="/calculo-complexo"
         element={
@@ -109,9 +110,6 @@ function AppRoutes() {
         }
       />
 
-      {/* Rota para qualquer caminho não encontrado */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
-
       <Route
         path="/historico"
         element={
@@ -120,6 +118,9 @@ function AppRoutes() {
           </AuthProtectedRoute>
         }
       />
+
+      {/* Rota catch-all DEVE ser a última */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

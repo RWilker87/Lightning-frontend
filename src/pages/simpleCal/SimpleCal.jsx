@@ -278,11 +278,10 @@ export function SimpleCalPage() {
             </div>
           </div>
           <div
-            className={`final-verdict ${
-              result.necessitaProtecao ? "verdict-required" : "verdict-ok"
-            }`}
+            className={`final-verdict ${result.necessitaProtecao ? "verdict-required" : "verdict-ok"
+              }`}
           >
-            <p>Se Nd > Nc, a proteção é recomendada.</p>
+            <p>Se Nd &gt; Nc, a proteção é recomendada.</p>
             <h3>{result.mensagem}</h3>
           </div>
         </div>

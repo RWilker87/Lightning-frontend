@@ -14,11 +14,20 @@ export function HistoryPage() {
     const fetchHistory = async () => {
       try {
         const response = await api.get("/history");
-        const parsedHistory = response.data.map((item) => ({
-          ...item,
-          parameters: JSON.parse(item.parameters),
-          result: JSON.parse(item.result),
-        }));
+        const parsedHistory = response.data
+          .map((item) => {
+            try {
+              return {
+                ...item,
+                parameters: JSON.parse(item.parameters),
+                result: JSON.parse(item.result),
+              };
+            } catch {
+              console.warn(`Registro de histórico com ID ${item.id} possui dados corrompidos e foi ignorado.`);
+              return null;
+            }
+          })
+          .filter(Boolean);
         setHistory(parsedHistory);
       } catch (err) {
         setError("Falha ao carregar o histórico.");

@@ -1,17 +1,5 @@
-/* Reset básico */
-body,
-html,
-#root {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #e5e5e5; /* fundo branco acinzentado */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "Segoe UI", sans-serif;
-}
+/* LoginPage — layout scoped */
+
 
 .container {
   width: 900px;
@@ -111,7 +99,8 @@ html,
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background: #fff; /* Destaque branco puro */
+  background: #fff;
+  /* Destaque branco puro */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   font-size: 14px;
 }
@@ -138,6 +127,7 @@ html,
   font-size: 14px;
   margin-top: 5px;
 }
+
 .inputEmail,
 .inputPassword {
   width: 100%;

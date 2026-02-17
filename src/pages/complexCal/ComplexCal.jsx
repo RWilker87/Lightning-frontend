@@ -1,10 +1,10 @@
 // src/pages/complexCal/ComplexCal.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import api from "../../services/api.js";
 import "./ComplexCal.css";
-import { format, differenceInDays, formatDistanceToNowStrict } from "date-fns";
+import { differenceInDays, formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
 // Estado inicial completo, com todos os parâmetros necessários para o cálculo
@@ -45,15 +45,64 @@ const initialState = {
   valor_predio: 100000,
   valor_conteudo: 50000,
   valor_sistemas: 20000,
-  get valor_total() {
-    return (
-      this.valor_predio +
-      this.valor_conteudo +
-      this.valor_sistemas +
-      this.valor_animais
-    );
-  },
 };
+
+// Componente de status de licença (extraído para evitar re-criação a cada render)
+const LicenseStatus = () => {
+  const { license } = useAuth();
+
+  if (!license) {
+    return (
+      <div className="license-status license-expired">
+        Licença não encontrada
+      </div>
+    );
+  }
+
+  const validUntil = new Date(license.validUntil);
+  const today = new Date();
+  const daysRemaining = differenceInDays(validUntil, today);
+
+  let statusClass = "ok";
+  let statusText;
+
+  if (daysRemaining < 0) {
+    statusClass = "expired";
+    statusText = "Licença Expirada";
+  } else {
+    statusText = `Licença expira em ${formatDistanceToNowStrict(validUntil, {
+      locale: ptBR,
+      addSuffix: true,
+      unit: "day",
+    })}`;
+    if (daysRemaining <= 7) {
+      statusClass = "warning";
+    }
+  }
+
+  return (
+    <div className={`license-status license-${statusClass}`}>
+      <span className="license-icon"></span>
+      {statusText}
+    </div>
+  );
+};
+
+// Componente para renderizar cada linha de resultado
+const ResultRow = ({ label, analysis }) => (
+  <div className="result-item">
+    <div className="result-info">
+      <span className="result-label">{label}:</span>
+      <span className="result-value">{analysis.risco}</span>
+    </div>
+    <span
+      className={`result-status ${analysis.necessita_protecao ? "status-required" : "status-ok"
+        }`}
+    >
+      {analysis.necessita_protecao ? "Proteção Requerida" : "Risco Tolerável"}
+    </span>
+  </div>
+);
 
 export function ComplexCalPage() {
   const { user } = useAuth();
@@ -66,50 +115,7 @@ export function ComplexCalPage() {
   const [isFetchingNg, setIsFetchingNg] = useState(false);
   const [ngInfo, setNgInfo] = useState("");
 
-  useEffect(() => {
-    handleFetchNg();
-  }, []);
-  const LicenseStatus = () => {
-    const { license } = useAuth();
-
-    if (!license) {
-      return (
-        <div className="license-status license-expired">
-          Licença não encontrada
-        </div>
-      );
-    }
-
-    const validUntil = new Date(license.validUntil);
-    const today = new Date();
-    const daysRemaining = differenceInDays(validUntil, today);
-
-    let statusClass = "ok";
-    let statusText;
-
-    if (daysRemaining < 0) {
-      statusClass = "expired";
-      statusText = "Licença Expirada";
-    } else {
-      statusText = `Licença expira em ${formatDistanceToNowStrict(validUntil, {
-        locale: ptBR,
-        addSuffix: true,
-        unit: "day",
-      })}`;
-      if (daysRemaining <= 7) {
-        statusClass = "warning";
-      }
-    }
-
-    return (
-      <div className={`license-status license-${statusClass}`}>
-        <span className="license-icon"></span>
-        {statusText}
-      </div>
-    );
-  };
-
-  const handleFetchNg = async () => {
+  const handleFetchNg = useCallback(async () => {
     if (!location) {
       setError("Por favor, insira uma localidade.");
       return;
@@ -129,25 +135,34 @@ export function ComplexCalPage() {
     } finally {
       setIsFetchingNg(false);
     }
-  };
+  }, [location]);
 
+  useEffect(() => {
+    handleFetchNg();
+  }, [handleFetchNg]);
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const inputValue =
       type === "checkbox"
         ? checked
         : type === "number"
-        ? parseFloat(value) || ""
-        : value;
+          ? parseFloat(value) || ""
+          : value;
     setFormData((prev) => ({ ...prev, [name]: inputValue }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
     setResult(null);
     try {
-      const payload = { ...formData, valor_total: formData.valor_total };
+      const valorTotal =
+        (formData.valor_predio || 0) +
+        (formData.valor_conteudo || 0) +
+        (formData.valor_sistemas || 0) +
+        (formData.valor_animais || 0);
+      const payload = { ...formData, valor_total: valorTotal };
       const response = await api.post("/calculations", payload);
       setResult(response.data);
     } catch (err) {
@@ -156,23 +171,6 @@ export function ComplexCalPage() {
       setIsLoading(false);
     }
   };
-
-  // Componente para renderizar cada linha de resultado
-  const ResultRow = ({ label, analysis }) => (
-    <div className="result-item">
-      <div className="result-info">
-        <span className="result-label">{label}:</span>
-        <span className="result-value">{analysis.risco}</span>
-      </div>
-      <span
-        className={`result-status ${
-          analysis.necessita_protecao ? "status-required" : "status-ok"
-        }`}
-      >
-        {analysis.necessita_protecao ? "Proteção Requerida" : "Risco Tolerável"}
-      </span>
-    </div>
-  );
 
   return (
     <div className="dashboard-container">

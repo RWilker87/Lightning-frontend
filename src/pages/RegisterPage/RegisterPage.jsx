@@ -4,31 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
 import "../RegisterPage/RegisterPage.css";
 
-// Estilos para o exemplo
-const styles = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    width: "300px",
-    margin: "100px auto",
-    padding: "20px",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-  },
-  input: { marginBottom: "10px", padding: "8px" },
-  button: {
-    padding: "10px",
-    cursor: "pointer",
-    backgroundColor: "#28a745",
-    color: "white",
-    border: "none",
-    borderRadius: "4px",
-  },
-  error: { color: "red", marginBottom: "10px" },
-  success: { color: "green", marginBottom: "10px" },
-  loginLink: { marginTop: "15px", textAlign: "center" },
-};
-
 export function RegisterPage() {
   const navigate = useNavigate();
   const [name, setName] = useState("");

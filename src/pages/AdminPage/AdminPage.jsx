@@ -1,17 +1,18 @@
-// src/pages/Admin/AdminPage.jsx
+// src/pages/AdminPage/AdminPage.jsx
 
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../../services/api.js";
 import { format, differenceInDays } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import "./AdminPage.css";
 
 export function AdminPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [daysToAdd, setDaysToAdd] = useState({});
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -31,18 +32,48 @@ export function AdminPage() {
     }
   };
 
+  const showSuccess = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => setSuccessMessage(""), 3000);
+  };
+
   const handleExtendLicense = async (userId) => {
-    const days = daysToAdd[userId] || 30; // Padrão de 30 dias se nada for digitado
+    const days = parseInt(daysToAdd[userId]) || 7;
+    setError("");
+    setSuccessMessage("");
+    setActionLoading(userId);
     try {
       await api.put(`/admin/licenses/${userId}`, { daysToAdd: days });
-      alert("Licença estendida com sucesso!");
-      fetchUsers(); // Recarrega a lista para mostrar a nova data
+      showSuccess(`Licença estendida com sucesso! (+${days} dias)`);
+      fetchUsers();
     } catch (err) {
-      alert(
-        `Erro ao estender a licença: ${
-          err.response?.data?.error || "Erro desconhecido"
-        }`
+      setError(
+        `Erro ao estender a licença: ${err.response?.data?.error || "Erro desconhecido"}`
       );
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleRevokeLicense = async (userId) => {
+    const confirmRevoke = window.confirm(
+      "Tem certeza que deseja revogar esta licença? O acesso do utilizador será desativado imediatamente."
+    );
+    if (!confirmRevoke) return;
+
+    setError("");
+    setSuccessMessage("");
+    setActionLoading(userId);
+    try {
+      await api.delete(`/admin/licenses/${userId}`);
+      showSuccess("Licença revogada com sucesso.");
+      fetchUsers();
+    } catch (err) {
+      setError(
+        `Erro ao revogar a licença: ${err.response?.data?.error || "Erro desconhecido"}`
+      );
+    } finally {
+      setActionLoading(null);
     }
   };
 
@@ -52,7 +83,6 @@ export function AdminPage() {
 
   if (loading)
     return <div className="admin-container">A carregar utilizadores...</div>;
-  if (error) return <div className="admin-container error-box">{error}</div>;
 
   return (
     <div className="admin-container">
@@ -63,6 +93,9 @@ export function AdminPage() {
         </Link>
       </header>
 
+      {error && <div className="error-box">{error}</div>}
+      {successMessage && <div className="success-box">{successMessage}</div>}
+
       <div className="user-table-container">
         <table className="user-table">
           <thead>
@@ -72,7 +105,7 @@ export function AdminPage() {
               <th>Licença Expira em</th>
               <th>Estado</th>
               <th>Adicionar Dias</th>
-              <th>Ação</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -82,6 +115,8 @@ export function AdminPage() {
               const daysRemaining = validUntil
                 ? differenceInDays(validUntil, new Date())
                 : null;
+              const isActive = license && license.active && daysRemaining >= 0;
+              const isCurrentLoading = actionLoading === user.id;
 
               return (
                 <tr key={user.id}>
@@ -96,7 +131,7 @@ export function AdminPage() {
                     {validUntil ? format(validUntil, "dd/MM/yyyy") : "N/A"}
                   </td>
                   <td>
-                    {license && license.active && daysRemaining >= 0 ? (
+                    {isActive ? (
                       <span className="status status-active">
                         {daysRemaining} dias restantes
                       </span>
@@ -110,19 +145,30 @@ export function AdminPage() {
                     <input
                       type="number"
                       className="days-input"
-                      placeholder="30"
+                      placeholder="7"
+                      min="1"
                       onChange={(e) =>
                         handleDaysChange(user.id, e.target.value)
                       }
                     />
                   </td>
-                  <td>
+                  <td className="action-buttons">
                     <button
-                      className="action-button"
+                      className="action-button authorize-button"
                       onClick={() => handleExtendLicense(user.id)}
+                      disabled={isCurrentLoading}
                     >
-                      Estender
+                      {isCurrentLoading ? "..." : "Autorizar"}
                     </button>
+                    {isActive && (
+                      <button
+                        className="action-button revoke-button"
+                        onClick={() => handleRevokeLicense(user.id)}
+                        disabled={isCurrentLoading}
+                      >
+                        Revogar
+                      </button>
+                    )}
                   </td>
                 </tr>
               );
