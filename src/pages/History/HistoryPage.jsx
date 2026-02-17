@@ -19,8 +19,8 @@ export function HistoryPage() {
             try {
               return {
                 ...item,
-                parameters: JSON.parse(item.parameters),
-                result: JSON.parse(item.result),
+                parameters: typeof item.parameters === "string" ? JSON.parse(item.parameters) : item.parameters,
+                result: typeof item.result === "string" ? JSON.parse(item.result) : item.result,
               };
             } catch {
               console.warn(`Registro de histórico com ID ${item.id} possui dados corrompidos e foi ignorado.`);
