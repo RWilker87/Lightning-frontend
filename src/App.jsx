@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
 import api from "./services/api.js";
+import { HomePage } from "./pages/Home/HomePage.jsx";
 
 // Importando todas as nossas páginas
 import { LoginPage } from "./pages/Login/LoginPage.jsx";
 import { RegisterPage } from "./pages/RegisterPage/RegisterPage.jsx";
 import { DashboardPage } from "./pages/dashboard/Dashboard.jsx";
 import { ComplexCalPage } from "./pages/complexCal/ComplexCal.jsx";
-import { SimpleCalPage } from "./pages/simpleCal/SimpleCal.jsx";
 import { AdminPage } from "./pages/AdminPage/AdminPage.jsx";
 import { HistoryPage } from "./pages/History/HistoryPage.jsx";
 
@@ -68,9 +68,10 @@ function AppRoutes() {
   return (
     <Routes>
       {/* Rotas Públicas */}
+      <Route path="/" element={<HomePage />} />
+      <Route path="/calculo-simples" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route path="/" element={<Navigate to="/login" replace />} />
 
       {/* Rotas Privadas/Protegidas */}
       <Route
@@ -88,15 +89,6 @@ function AppRoutes() {
           <AdminProtectedRoute>
             <AdminPage />
           </AdminProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/calculo-simples"
-        element={
-          <AuthProtectedRoute>
-            <SimpleCalPage />
-          </AuthProtectedRoute>
         }
       />
 
@@ -120,7 +112,7 @@ function AppRoutes() {
       />
 
       {/* Rota catch-all DEVE ser a última */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

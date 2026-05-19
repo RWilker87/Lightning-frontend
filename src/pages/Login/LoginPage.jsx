@@ -1,4 +1,3 @@
-// src/pages/Login/LoginPage.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./LoginPage.css";
@@ -38,46 +37,56 @@ export function LoginPage() {
   };
 
   return (
-    <div className="container">
-      <div className="left-panel">
-        <h2>Olá!</h2>
-        <p>
-          Ainda não tem uma conta?
-          <br />
-          Cadastre-se agora para começar!
-        </p>
-        <Link to="/register">
-          <button className="transparent-btn">SIGN UP</button>
+    <div className="login-page">
+      <header className="login-nav">
+        <Link to="/" className="login-brand" aria-label="Lightning Risk">
+          <span className="brand-mark">LR</span>
+          <span>Lightning Risk</span>
         </Link>
-      </div>
+      </header>
 
-      <div className="right-panel">
-        <form className="form-box" onSubmit={handleLogin}>
-          <h2>Entrar</h2>
-          <span>Use seu e-mail e senha para acessar:</span>
+      <main className="login-container">
+        <div className="login-box">
+          <h2>Bem-vindo de volta</h2>
+          <p>Acesse sua conta para continuar.</p>
 
-          <input
-            className="inputEmail"
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            className="inputPassword"
-            type="password"
-            placeholder="Senha"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <form onSubmit={handleLogin} aria-label="Formulário de login">
+            <div className="login-field">
+              <label htmlFor="email">E-mail</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
 
-          {error && <p className="error-message">{error}</p>}
+            <div className="login-field">
+              <label htmlFor="password">Senha</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Sua senha"
+                required
+              />
+            </div>
 
-          <button type="submit" className="signup-btn" disabled={isLoading}>
-            {isLoading ? "Entrando..." : "Entrar"}
-          </button>
-        </form>
-      </div>
+            {error && <p className="error-message">{error}</p>}
+
+            <button type="submit" className="login-action" disabled={isLoading}>
+              {isLoading ? "Entrando..." : "Entrar"}
+            </button>
+          </form>
+
+          <div className="login-footer">
+            Ainda não tem uma conta? <Link to="/register">Solicitar acesso</Link>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

@@ -1,8 +1,7 @@
-// src/pages/RegisterPage.jsx
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
-import "../RegisterPage/RegisterPage.css";
+import "./RegisterPage.css";
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -11,6 +10,7 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -22,18 +22,17 @@ export function RegisterPage() {
       return;
     }
 
+    setIsLoading(true);
     try {
       await api.post("/users", { name, email, password });
 
-      setSuccess(
-        "Cadastro realizado com sucesso! Redirecionando para o login..."
-      );
+      setSuccess("Cadastro realizado com sucesso! Redirecionando...");
 
-      // Redireciona para a página de login após 2 segundos
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (err) {
+      setIsLoading(false);
       setError(
         err.response?.data?.error || "Ocorreu um erro ao realizar o cadastro."
       );
@@ -41,38 +40,69 @@ export function RegisterPage() {
   };
 
   return (
-    <form onSubmit={handleRegister} className="register-container">
-      <h2>Criar Conta</h2>
-      {error && <p className="error-message">{error}</p>}
-      {success && <p className="success-message">{success}</p>}
+    <div className="login-page">
+      <header className="login-nav">
+        <Link to="/" className="login-brand" aria-label="Lightning Risk">
+          <span className="brand-mark">LR</span>
+          <span>Lightning Risk</span>
+        </Link>
+      </header>
 
-      <input
-        type="text"
-        placeholder="Seu nome"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        className="input"
-      />
-      <input
-        type="email"
-        placeholder="Seu e-mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="input"
-      />
-      <input
-        type="password"
-        placeholder="Sua senha"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="input"
-      />
-      <button type="submit" className="register-button">
-        Cadastrar
-      </button>
-      <div className="login-link">
-        <Link to="/login">Já tem uma conta? Faça login</Link>
-      </div>
-    </form>
+      <main className="login-container">
+        <div className="login-box">
+          <h2>Criar Conta</h2>
+          <p>Preencha os dados abaixo para solicitar acesso completo.</p>
+
+          <form onSubmit={handleRegister} aria-label="Formulário de cadastro">
+            <div className="login-field">
+              <label htmlFor="name">Nome completo</label>
+              <input
+                id="name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Seu nome"
+                required
+              />
+            </div>
+
+            <div className="login-field">
+              <label htmlFor="email">E-mail</label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="seu@email.com"
+                required
+              />
+            </div>
+
+            <div className="login-field">
+              <label htmlFor="password">Senha</label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Crie uma senha"
+                required
+              />
+            </div>
+
+            {error && <p className="error-message">{error}</p>}
+            {success && <p className="success-message">{success}</p>}
+
+            <button type="submit" className="login-action" disabled={isLoading || success}>
+              {isLoading ? "Processando..." : "Cadastrar"}
+            </button>
+          </form>
+
+          <div className="login-footer">
+            Já tem uma conta? <Link to="/login">Faça login</Link>
+          </div>
+        </div>
+      </main>
+    </div>
   );
 }
