@@ -1,11 +1,9 @@
-// src/pages/dashboard/Dashboard.jsx
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import { format } from "date-fns";
 import "./Dashboard.css";
 
-// Ícones como componentes SVG para melhor qualidade e controlo
 const IconComplex = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -61,18 +59,14 @@ const IconHistory = () => (
   </svg>
 );
 
-// Card de status da licença
 function LicenseStatusCard({ license }) {
   if (!license) {
     return (
       <div className="license-card license-inactive">
-        <div className="license-card-icon">⏳</div>
-        <div className="license-card-info">
-          <h3>Licença Inativa</h3>
-          <p>Aguardando aprovação do administrador.</p>
-          <p className="license-subtitle">
-            Sua conta foi criada, mas a licença ainda não foi ativada. Entre em contato com o administrador.
-          </p>
+        <div className="license-icon">⏳</div>
+        <div className="license-info">
+          <h3>Licença inativa</h3>
+          <p>Sua conta foi criada, mas a licença ainda não foi ativada. Entre em contato com o administrador.</p>
         </div>
       </div>
     );
@@ -81,9 +75,9 @@ function LicenseStatusCard({ license }) {
   if (!license.active) {
     return (
       <div className="license-card license-expired">
-        <div className="license-card-icon">❌</div>
-        <div className="license-card-info">
-          <h3>Licença Expirada</h3>
+        <div className="license-icon">❌</div>
+        <div className="license-info">
+          <h3>Licença expirada</h3>
           <p>Sua licença expirou. Aguardando renovação pelo administrador.</p>
         </div>
       </div>
@@ -93,9 +87,9 @@ function LicenseStatusCard({ license }) {
   const validDate = new Date(license.validUntil);
   return (
     <div className="license-card license-active">
-      <div className="license-card-icon">✅</div>
-      <div className="license-card-info">
-        <h3>Licença Ativa</h3>
+      <div className="license-icon">✅</div>
+      <div className="license-info">
+        <h3>Licença ativa</h3>
         <p>Válida até: <strong>{format(validDate, "dd/MM/yyyy")}</strong></p>
       </div>
     </div>
@@ -110,75 +104,73 @@ export function DashboardPage() {
   const hasActiveLicense = license && license.active;
 
   return (
-    <div className="hub-container">
-      <header className="hub-header">
-        <h1>Painel Principal</h1>
-        <div className="header-user-controls">
+    <div className="dashboard-page">
+      <header className="dash-nav">
+        <Link to="/" className="dash-brand" aria-label="Lightning Risk">
+          <span className="brand-mark">LR</span>
+          <span>Lightning Risk</span>
+        </Link>
+        <div className="dash-user-controls">
+          <span className="welcome-user">Olá, {user?.name}</span>
           {user?.is_admin && (
-            <Link to="/admin/dashboard" className="admin-link">
-              Painel de Administração
+            <Link to="/admin/dashboard" className="nav-action">
+              Administração
             </Link>
           )}
-          <span className="welcome-user">Olá, {user?.name}!</span>
-          <button className="logout-button" onClick={logout}>
+          <button className="nav-action-outline" onClick={logout}>
             Sair
           </button>
         </div>
       </header>
 
-      <main className="hub-main">
-        {/* Card de Status da Licença */}
-        <LicenseStatusCard license={license} />
+      <main className="dash-container">
+        <div className="dash-header">
+          <h2>Seu Painel</h2>
+          <p>Selecione a ferramenta de análise desejada ou verifique seu status.</p>
+        </div>
 
         {licenseError && (
-          <div className="license-error-box">
-            Acesso negado. A funcionalidade de Análise Completa requer uma
-            licença ativa.
+          <div className="alert-box error">
+            Acesso negado. A funcionalidade de Análise Completa requer uma licença ativa.
           </div>
         )}
 
-        <h2 className="hub-title">Selecione uma Ferramenta de Análise</h2>
+        <LicenseStatusCard license={license} />
 
-        <div className="options-container">
+        <div className="options-grid">
           <Link
             to={hasActiveLicense ? "/calculo-complexo" : "#"}
-            className={`option-card card-complex ${!hasActiveLicense ? "disabled" : ""}`}
+            className={`option-card ${!hasActiveLicense ? "disabled" : ""}`}
             onClick={(e) => !hasActiveLicense && e.preventDefault()}
           >
-            {!hasActiveLicense && <div className="lock-icon">🔒</div>}
-            <div className="option-card-icon">
-              <IconComplex />
+            <div className="card-top">
+              <span className="card-number">01</span>
+              {!hasActiveLicense && <span className="lock-icon" aria-label="Bloqueado">🔒</span>}
             </div>
-            <h3>Análise de Risco Completa</h3>
-            <p>
-              Realize um cálculo detalhado conforme a norma ABNT NBR 5419, com
-              todos os parâmetros.
-            </p>
+            <div className="card-icon"><IconComplex /></div>
+            <h3>Cálculo Completo</h3>
+            <p>Realize um estudo detalhado conforme a norma ABNT NBR 5419.</p>
             {!hasActiveLicense && (
-              <span className="license-required-tag">Requer Licença Ativa</span>
+              <div className="license-tag">Requer licença ativa</div>
             )}
           </Link>
 
-          <Link to="/calculo-simples" className="option-card card-simple">
-            <div className="option-card-icon">
-              <IconSimple />
+          <Link to="/calculo-simples" className="option-card">
+            <div className="card-top">
+              <span className="card-number">02</span>
             </div>
+            <div className="card-icon"><IconSimple /></div>
             <h3>Cálculo Simplificado</h3>
-            <p>
-              Uma ferramenta rápida para estimativas de risco com base em
-              parâmetros essenciais.
-            </p>
+            <p>Faça uma estimativa rápida de risco baseada em parâmetros essenciais.</p>
           </Link>
 
-          <Link to="/historico" className="option-card card-history">
-            <div className="option-card-icon">
-              <IconHistory />
+          <Link to="/historico" className="option-card">
+            <div className="card-top">
+              <span className="card-number">03</span>
             </div>
-            <h3>Histórico de Análises</h3>
-            <p>
-              Reveja e consulte todos os cálculos de risco que já foram
-              realizados na sua conta.
-            </p>
+            <div className="card-icon"><IconHistory /></div>
+            <h3>Histórico</h3>
+            <p>Acesse e consulte todos os cálculos realizados anteriormente na sua conta.</p>
           </Link>
         </div>
       </main>
