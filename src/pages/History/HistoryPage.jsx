@@ -51,10 +51,12 @@ function DetailModal({ item, onClose }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
           <h2>Detalhes do Cálculo</h2>
-          <span className="modal-date">
-            {format(new Date(item.created_at), "dd/MM/yyyy 'às' HH:mm")}
-          </span>
-          <button className="modal-close" onClick={onClose}>✕</button>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <span className="modal-date">
+              {format(new Date(item.created_at), "dd/MM/yyyy 'às' HH:mm")}
+            </span>
+            <button className="modal-close" onClick={onClose} aria-label="Fechar modal">✕</button>
+          </div>
         </header>
 
         {/* Parâmetros de Entrada */}
@@ -144,94 +146,139 @@ export function HistoryPage() {
     fetchHistory();
   }, []);
 
-  if (loading)
-    return <div className="history-container">A carregar histórico...</div>;
-  if (error) return <div className="history-container error-box">{error}</div>;
+  if (loading) {
+    return (
+      <div className="history-page">
+        <header className="dash-nav">
+          <Link to="/" className="dash-brand">
+            <span className="brand-mark">LR</span>
+            <span>Lightning Risk</span>
+          </Link>
+        </header>
+        <main className="dash-container" style={{ textAlign: "center" }}>
+          <p>A carregar histórico...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="history-page">
+        <header className="dash-nav">
+          <Link to="/" className="dash-brand">
+            <span className="brand-mark">LR</span>
+            <span>Lightning Risk</span>
+          </Link>
+          <div className="dash-user-controls">
+            <Link to="/dashboard" className="nav-action-outline">
+              ← Voltar ao Painel
+            </Link>
+          </div>
+        </header>
+        <main className="dash-container">
+          <div className="error-box">{error}</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
-    <div className="history-container">
-      <header className="history-header">
-        <h1>Histórico de Cálculos</h1>
-        <Link to="/dashboard" className="back-button">
-          ← Voltar ao Painel
+    <div className="history-page">
+      <header className="dash-nav">
+        <Link to="/" className="dash-brand" aria-label="Lightning Risk">
+          <span className="brand-mark">LR</span>
+          <span>Lightning Risk</span>
         </Link>
+        <div className="dash-user-controls">
+          <Link to="/dashboard" className="nav-action-outline">
+            ← Voltar ao Painel
+          </Link>
+        </div>
       </header>
 
-      {history.length === 0 ? (
-        <p className="no-history-message">Ainda não realizou nenhum cálculo.</p>
-      ) : (
-        <div className="history-table-container">
-          <table className="history-table">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Dimensões (LxWxH)</th>
-                <th>Densidade (Ng)</th>
-                <th>R1 (Vidas)</th>
-                <th>R2 (Serviços)</th>
-                <th>R3 (Cultural)</th>
-                <th>R4 (Económico)</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {history.map((item) => (
-                <tr key={item.id}>
-                  <td>
-                    {format(new Date(item.created_at), "dd/MM/yyyy HH:mm")}
-                  </td>
-                  <td>{`${item.parameters.L} x ${item.parameters.W} x ${item.parameters.H} m`}</td>
-                  <td>{item.parameters.Ng}</td>
-                  <td
-                    className={
-                      item.result.analysis.R1.necessita_protecao
-                        ? "risk-high"
-                        : "risk-low"
-                    }
-                  >
-                    {item.result.finalRisks.R1}
-                  </td>
-                  <td
-                    className={
-                      item.result.analysis.R2.necessita_protecao
-                        ? "risk-high"
-                        : "risk-low"
-                    }
-                  >
-                    {item.result.finalRisks.R2}
-                  </td>
-                  <td
-                    className={
-                      item.result.analysis.R3.necessita_protecao
-                        ? "risk-high"
-                        : "risk-low"
-                    }
-                  >
-                    {item.result.finalRisks.R3}
-                  </td>
-                  <td
-                    className={
-                      item.result.analysis.R4.necessita_protecao
-                        ? "risk-high"
-                        : "risk-low"
-                    }
-                  >
-                    {item.result.finalRisks.R4}
-                  </td>
-                  <td>
-                    <button
-                      className="details-button"
-                      onClick={() => setSelectedItem(item)}
-                    >
-                      Ver Detalhes
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <main className="dash-container">
+        <div className="dash-header">
+          <h2>Histórico de Cálculos</h2>
+          <p>Consulte todos os estudos de risco e dimensionamento SPDA realizados na sua conta.</p>
         </div>
-      )}
+
+        {history.length === 0 ? (
+          <p className="no-history-message">Ainda não realizou nenhum cálculo.</p>
+        ) : (
+          <div className="history-table-container">
+            <table className="history-table">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Dimensões (LxWxH)</th>
+                  <th>Densidade (Ng)</th>
+                  <th>R1 (Vidas)</th>
+                  <th>R2 (Serviços)</th>
+                  <th>R3 (Cultural)</th>
+                  <th>R4 (Económico)</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.map((item) => (
+                  <tr key={item.id}>
+                    <td>
+                      {format(new Date(item.created_at), "dd/MM/yyyy HH:mm")}
+                    </td>
+                    <td>{`${item.parameters.L} x ${item.parameters.W} x ${item.parameters.H} m`}</td>
+                    <td>{item.parameters.Ng}</td>
+                    <td
+                      className={
+                        item.result.analysis.R1.necessita_protecao
+                          ? "risk-high"
+                          : "risk-low"
+                      }
+                    >
+                      {item.result.finalRisks.R1}
+                    </td>
+                    <td
+                      className={
+                        item.result.analysis.R2.necessita_protecao
+                          ? "risk-high"
+                          : "risk-low"
+                      }
+                    >
+                      {item.result.finalRisks.R2}
+                    </td>
+                    <td
+                      className={
+                        item.result.analysis.R3.necessita_protecao
+                          ? "risk-high"
+                          : "risk-low"
+                      }
+                    >
+                      {item.result.finalRisks.R3}
+                    </td>
+                    <td
+                      className={
+                        item.result.analysis.R4.necessita_protecao
+                          ? "risk-high"
+                          : "risk-low"
+                      }
+                    >
+                      {item.result.finalRisks.R4}
+                    </td>
+                    <td>
+                      <button
+                        className="details-button"
+                        onClick={() => setSelectedItem(item)}
+                      >
+                        Ver Detalhes
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </main>
 
       {/* Modal de Detalhes */}
       {selectedItem && (
