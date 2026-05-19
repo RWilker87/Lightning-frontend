@@ -6,6 +6,7 @@ import api from "../../services/api.js";
 import "./ComplexCal.css";
 import { differenceInDays, formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { downloadCalculationPDF } from "../../utils/pdfGenerator";
 
 // Estado inicial completo, com todos os parâmetros necessários para o cálculo
 const initialState = {
@@ -549,7 +550,16 @@ export function ComplexCalPage() {
         {result && (
           <div className="result-container">
             <div className="result-box">
-              <h2 className="result-title">Análise de Risco Concluída</h2>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "12px" }}>
+                <h2 className="result-title" style={{ margin: 0 }}>Análise de Risco Concluída</h2>
+                <button
+                  type="button"
+                  className="nav-action-outline"
+                  onClick={() => downloadCalculationPDF({ parameters: formData, result }, user?.name)}
+                >
+                  Baixar Relatório PDF
+                </button>
+              </div>
               <div className="result-grid">
                 <ResultRow label="R1 (Risco de Perda de Vida Humana)" analysis={result.analysis.R1} />
                 <ResultRow label="R2 (Risco de Perda de Serviço Público)" analysis={result.analysis.R2} />

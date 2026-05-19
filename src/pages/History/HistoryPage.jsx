@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import api from "../../services/api.js";
 import { format } from "date-fns";
 import "./HistoryPage.css";
+import { useAuth } from "../../contexts/AuthContext.jsx";
+import { downloadCalculationPDF } from "../../utils/pdfGenerator.js";
 
 // Labels legíveis para os parâmetros do cálculo
 const parameterLabels = {
@@ -40,7 +42,7 @@ function formatValue(key, value) {
 }
 
 // Modal de detalhes do cálculo
-function DetailModal({ item, onClose }) {
+function DetailModal({ item, onClose, userName }) {
   if (!item) return null;
 
   const params = item.parameters;
@@ -51,7 +53,14 @@ function DetailModal({ item, onClose }) {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <header className="modal-header">
           <h2>Detalhes do Cálculo</h2>
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <button
+              className="details-button"
+              style={{ padding: "4px 10px", fontSize: "11px", height: "auto" }}
+              onClick={() => downloadCalculationPDF(item, userName)}
+            >
+              Baixar PDF
+            </button>
             <span className="modal-date">
               {format(new Date(item.created_at), "dd/MM/yyyy 'às' HH:mm")}
             </span>
@@ -113,6 +122,7 @@ function DetailModal({ item, onClose }) {
 }
 
 export function HistoryPage() {
+  const { user } = useAuth();
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -267,12 +277,19 @@ export function HistoryPage() {
                     >
                       {item.result.finalRisks.R4}
                     </td>
-                    <td>
+                    <td style={{ display: "flex", gap: "8px", justifyContent: "center" }}>
                       <button
                         className="details-button"
                         onClick={() => setSelectedItem(item)}
                       >
-                        Ver Detalhes
+                        Detalhes
+                      </button>
+                      <button
+                        className="details-button"
+                        style={{ background: "transparent", color: "var(--ink)", borderColor: "var(--line-strong)" }}
+                        onClick={() => downloadCalculationPDF(item, user?.name)}
+                      >
+                        PDF
                       </button>
                     </td>
                   </tr>
@@ -288,6 +305,7 @@ export function HistoryPage() {
         <DetailModal
           item={selectedItem}
           onClose={() => setSelectedItem(null)}
+          userName={user?.name}
         />
       )}
     </div>
