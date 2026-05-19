@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import { useAuth } from "../../contexts/AuthContext";
 import "./RegisterPage.css";
 
 export function RegisterPage() {
+  const { isAuthenticated, user: authUser, loading } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -11,6 +13,29 @@ export function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redireciona se já estiver autenticado
+  useEffect(() => {
+    if (!loading && isAuthenticated && authUser) {
+      if (authUser.is_admin) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [isAuthenticated, authUser, loading, navigate]);
+
+  if (loading) {
+    return (
+      <div className="login-page">
+        <main className="login-container">
+          <div className="login-box" style={{ textAlign: "center" }}>
+            <p>A verificar sessão...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const handleRegister = async (e) => {
     e.preventDefault();

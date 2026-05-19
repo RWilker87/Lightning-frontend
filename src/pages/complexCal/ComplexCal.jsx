@@ -181,6 +181,9 @@ export function ComplexCalPage() {
         </Link>
         <div className="dash-user-controls">
           <LicenseStatus />
+          <Link to="/calculo-simples" className="nav-action-outline">
+            Cálculo Simplificado
+          </Link>
           <Link to="/dashboard" className="nav-action-outline">
             ← Voltar ao Painel
           </Link>

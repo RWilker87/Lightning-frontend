@@ -1,15 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./LoginPage.css";
 import { useAuth } from "../../contexts/AuthContext";
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, isAuthenticated, user: authUser, loading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redireciona se já estiver autenticado
+  useEffect(() => {
+    if (!loading && isAuthenticated && authUser) {
+      if (authUser.is_admin) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/dashboard");
+      }
+    }
+  }, [isAuthenticated, authUser, loading, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -35,6 +46,18 @@ export function LoginPage() {
       setError("E-mail ou senha inválidos.");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="login-page">
+        <main className="login-container">
+          <div className="login-box" style={{ textAlign: "center" }}>
+            <p>A verificar sessão...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="login-page">

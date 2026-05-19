@@ -12,6 +12,7 @@ import { DashboardPage } from "./pages/dashboard/Dashboard.jsx";
 import { ComplexCalPage } from "./pages/complexCal/ComplexCal.jsx";
 import { AdminPage } from "./pages/AdminPage/AdminPage.jsx";
 import { HistoryPage } from "./pages/History/HistoryPage.jsx";
+import { SimpleCalPage } from "./pages/simpleCal/SimpleCal.jsx";
 
 // "Porteiro" Padrão: Verifica apenas se o utilizador está logado.
 const AuthProtectedRoute = ({ children }) => {
@@ -69,7 +70,6 @@ function AppRoutes() {
     <Routes>
       {/* Rotas Públicas */}
       <Route path="/" element={<HomePage />} />
-      <Route path="/calculo-simples" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
@@ -79,6 +79,15 @@ function AppRoutes() {
         element={
           <AuthProtectedRoute>
             <DashboardPage />
+          </AuthProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/calculo-simples"
+        element={
+          <AuthProtectedRoute>
+            <SimpleCalPage />
           </AuthProtectedRoute>
         }
       />
